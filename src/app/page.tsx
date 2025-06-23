@@ -1,28 +1,49 @@
 'use client' 
-import { use, useState } from "react";
+import { use, useEffect, useState } from "react";
 
 interface Persona{
   nombre : string,
   apellido : string,
-  edad : String
 }
 let initialStatePersona:Persona = {
   nombre : "",
   apellido : "",
-  edad : ""
 }
-export default function Home() {
 
+export default function Home() {
+  const miStorage = window.localStorage
+//
   const [persona, setPersona] = useState(initialStatePersona)
+  const [personas,setPersonas] = useState<Persona[]>([])
+  const [eNombre,setENombre] = useState("")
+  useEffect(()=>{
+    let listadoStr = miStorage.getItem("personas")
+    if (listadoStr != null){
+      let listado = JSON.parse(listadoStr)
+      setPersona(listado)
+    }
+  },[])
   const handlePersona = (name:string,value:string)=>{
     //validaciones
     setPersona(
       {...persona,[name]:value}
     )
-  }
+  };
+    const handleRegistrar = ()=>{
+
+
+
+
+
+
+      miStorage.setItem("personas",JSON.stringify([...personas,persona]))
+  
+    }
+  
+  
   return (
     <form>
-      <h1>Hola {persona.nombre} {persona.apellido} {persona.edad}</h1>
+      <h1>Hola {persona.nombre} {persona.apellido}</h1>
       <label>Nombre</label><br />
       <input 
       name="nombre"
@@ -36,14 +57,6 @@ export default function Home() {
       name="apellido"
       type="text" 
       placeholder="Ingresar Apellido"     
-      onChange={(e)=>handlePersona(e.currentTarget.name,e.currentTarget.value)}/><br />
-      <span></span><br />
-
-      <label>Edad</label><br />
-      <input 
-      name="edad"
-      type="text" 
-      placeholder="Ingresar Edad"     
       onChange={(e)=>handlePersona(e.currentTarget.name,e.currentTarget.value)}/><br />
       <span></span><br />
       <button>Registrar</button>
